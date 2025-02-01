@@ -1,15 +1,13 @@
 <?PHP
-define("HOST_IP", "");
-define("API_PORT", "");
-define("USR_NAME", "");
-define("API_PASS", "");
+define("HOST_IP", "192.168.55.66");
+define("API_PORT", "43436");
+define("USR_NAME", $argv[1]);
+define("API_PASS", $argv[2]);
 
-require 'funcs.php';
+echo USR_NAME . ' pass: ' . API_PASS . PHP_EOL;
+
+require 'apiFuncs.php';
 global $loginInfo;
-
-
-
-
 
 /**
  * Extracts the first IP of the first network from a given IP range.
@@ -121,7 +119,7 @@ function createIpPoolWithVidRange($svid, $prfx='NotAvl', $oct2='10.47', $s3oct=1
     $apiport = API_PORT;
     $username = USR_NAME;
     $password = API_PASS;
-    for ($i=0; $i <= $bundle; $i++) {
+    for ($i=0; $i < $bundle; $i++) {
         $thisVid = $svid + $i;
         $rngs = $oct2 . '.' . ($s3oct + $i*2) . '.3'; 
         $rnge = $oct2 . '.' . ($s3oct + ($i*2)+1) . '.250';
@@ -177,7 +175,7 @@ function createVlanRange($strtvid, $endvid, $prefix, $prntif) {
     $apiport = API_PORT;
     $username = USR_NAME;
     $password = API_PASS;
-    for ($nv = $strtvid; $nv <= $endvid; $nv++ ) {
+    for ($nv = $strtvid; $nv < $endvid; $nv++ ) {
         $vlname = $prefix . '-' . $nv . '-VLAN-IF';
         $rslt = createVlanInterface($hostip, $apiport, $username, $password, $vlname, $nv, $prntif);
     }
@@ -188,16 +186,33 @@ function createPppoeServiceRange($svlan, $evlan, $prefix) {
     $apiport = API_PORT;
     $username = USR_NAME;
     $password = API_PASS;
-    for ($nv = $svlan; $nv <= $evlan; $nv++ ) {
+    for ($nv = $svlan; $nv < $evlan; $nv++ ) {
         $srvname = $prefix . '-' . $nv . '-PPPOE-SRV';
         $vifname = $prefix . '-' . $nv . '-VLAN-IF';
         $dfltProf = $prefix. '-' . $nv . '-DFLT-PROF';
         $stat = createPppoeService($hostip, $apiport, $username, $password, $srvname, $vifname, $dfltProf);
-        var_dump($stat);
+        // var_dump($stat);
     }
 }
 
-createIpPoolWithVidRange(1034, 'KhnIsp', '10.47', 1, 20);
-createProfilesOnPools();
-createVlanRange(1034, 1044, 'KhnIsp', '00-F-2');
-createPppoeServiceRange(1034, 1044, 'KhnIsp');
+function newResellerInit() {
+    $namePrefix = 'GonIsp';
+    $numberOfArea = 6;
+    $startVlan = 1232;
+    $endVlan = $startVlan + $numberOfArea;
+    $ipPoolPrefix = '10.20';
+    $netStart = 10;
+    $parentIf = '00-F-2';
+    createIpPoolWithVidRange($startVlan, $namePrefix, $ipPoolPrefix, $netStart, $numberOfArea);
+    createProfilesOnPools();
+    createVlanRange($startVlan, $endVlan, $namePrefix, $parentIf);
+    createPppoeServiceRange($startVlan, $endVlan, $namePrefix);
+}
+
+// createIpPoolWithVidRange(1034, 'KhnIsp', '10.47', 1, 20);
+
+
+// createProfilesOnPools();
+// createVlanRange(1034, 1044, 'KhnIsp', '00-F-2');
+// createPppoeServiceRange(1034, 1044, 'KhnIsp');
+newResellerInit();

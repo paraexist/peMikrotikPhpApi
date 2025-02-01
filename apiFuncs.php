@@ -59,7 +59,6 @@ function readInterfaces($hostip, $apiport, $username, $password)
     }
 }
 
-
 /**
  * Retrieves a list of PPP profiles from a MikroTik router.
  *
