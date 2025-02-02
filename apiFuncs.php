@@ -764,7 +764,6 @@ function createPppoeService($hostip, $apiport, $username, $password, $srvname, $
 // $result = deleteSecret($hoistip, $apiport, $username, $password, 'koto@kotha');
 
 // transferIpPools();
-// radDbtoSecret();
 // createSingleVlan();
 // createVlanRange(1034, 1044, 'GRCT', 'F-1');
 // createSinglePpppoeService();

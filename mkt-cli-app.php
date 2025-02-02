@@ -1,8 +1,10 @@
 <?PHP
-define("HOST_IP", "192.168.55.90");
+define("HOST_IP", "192.168.55.66");
 define("API_PORT", "43436");
 define("USR_NAME", $argv[1]);
 define("API_PASS", $argv[2]);
+
+define("RAD_DB_FILE", "/home/jahidsd/MyProjects/2024_fresh/db_files/pe_subscriber_billing/pe_subscriber_billing.slite3");
 
 echo USR_NAME . ' pass: ' . API_PASS . PHP_EOL;
 
@@ -68,20 +70,20 @@ function transferIpPools() {
 }
 
 function radDbtoSecret() {
-    $dbPath = '/home/<username>/MyProjects/2024_fresh/db_files/pe_subscriber_billing/pe_subscriber_billing.slite3';
     $hostip = HOST_IP;
     $apiport = API_PORT;
     $username = USR_NAME;
     $password = API_PASS;
     $sqlString = 'SELECT * from rad_login_entry';
 
-    $records = simpleQuerySqlite($dbPath, $sqlString);
+    $records = simpleQuerySqlite(RAD_DB_FILE, $sqlString);
     foreach ($records as $record) {
         // var_dump($record);
-        $secretname = $record['ppp_user_name'];
-        $secretpass = $record['ppp_password'];
-        $pppserver = $record['pppoe_server'];
-        $profile = $pppserver . '-dflt-Prof';
+        $secretname = $record['puname'];
+        $secretpass = $record['ppass'];
+        $pppserver = $record['pserver'];
+        $areaPart = str_replace("PPPOE-SRV", "", $pppserver);
+        $profile = $areaPart . 'DFLT-PROF';
         // echo $secretname . ' ' . $secretpass . ' ' . $pppserver . ' ' . $profile . PHP_EOL;
         $additionalParams = [
             'service' => 'pppoe',  // Set Service to PPPoE
@@ -196,12 +198,12 @@ function createPppoeServiceRange($svlan, $evlan, $prefix) {
 }
 
 function newResellerInit() {
-    $namePrefix = 'GonIsp';
+    $namePrefix = 'EP';
     $numberOfArea = 6;
-    $startVlan = 1232;
+    $startVlan = 1063;
     $endVlan = $startVlan + $numberOfArea;
     $ipPoolPrefix = '10.20';
-    $netStart = 10;
+    $netStart = 64;
     $parentIf = '00-F-2';
     createIpPoolWithVidRange($startVlan, $namePrefix, $ipPoolPrefix, $netStart, $numberOfArea);
     createProfilesOnPools();
@@ -209,10 +211,12 @@ function newResellerInit() {
     createPppoeServiceRange($startVlan, $endVlan, $namePrefix);
 }
 
+radDbtoSecret();
+
 // createIpPoolWithVidRange(1034, 'KhnIsp', '10.47', 1, 20);
 
 
-createProfilesOnPools();
+// createProfilesOnPools();
 // createVlanRange(1034, 1044, 'KhnIsp', '00-F-2');
 // createPppoeServiceRange(1034, 1044, 'KhnIsp');
-// newResellerInit();
+newResellerInit();
