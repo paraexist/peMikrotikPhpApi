@@ -751,22 +751,3 @@ function createPppoeService($hostip, $apiport, $username, $password, $srvname, $
     }
 }
 
-
-// $result = readSecrets($hoistip, $apiport, $username, $password);
-
-
-// $result = createSecret($hoistip, $apiport, $username, $password, 'sundror@nam', 'sundor@pass', $additionalParams);
-
-// $result = disableSecret($hoistip, $apiport, $username, $password, 'koto@kotha');
-
-// $result = enableSecret($hoistip, $apiport, $username, $password, 'koto@kotha');
-
-// $result = deleteSecret($hoistip, $apiport, $username, $password, 'koto@kotha');
-
-// transferIpPools();
-// createSingleVlan();
-// createVlanRange(1034, 1044, 'GRCT', 'F-1');
-// createSinglePpppoeService();
-// createSingleIpPool();
-// createProfilesOnPools();
-
