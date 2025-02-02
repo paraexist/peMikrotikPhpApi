@@ -1,5 +1,5 @@
 <?PHP
-define("HOST_IP", "192.168.55.66");
+define("HOST_IP", "192.168.55.90");
 define("API_PORT", "43436");
 define("USR_NAME", $argv[1]);
 define("API_PASS", $argv[2]);
@@ -212,7 +212,7 @@ function newResellerInit() {
 // createIpPoolWithVidRange(1034, 'KhnIsp', '10.47', 1, 20);
 
 
-// createProfilesOnPools();
+createProfilesOnPools();
 // createVlanRange(1034, 1044, 'KhnIsp', '00-F-2');
 // createPppoeServiceRange(1034, 1044, 'KhnIsp');
-newResellerInit();
+// newResellerInit();
