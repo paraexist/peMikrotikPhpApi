@@ -69,30 +69,6 @@ function transferIpPools() {
     }
 }
 
-function radDbtoSecret() {
-    $hostip = HOST_IP;
-    $apiport = API_PORT;
-    $username = USR_NAME;
-    $password = API_PASS;
-    $sqlString = 'SELECT * from rad_login_entry';
-
-    $records = simpleQuerySqlite(RAD_DB_FILE, $sqlString);
-    foreach ($records as $record) {
-        // var_dump($record);
-        $secretname = $record['puname'];
-        $secretpass = $record['ppass'];
-        $pppserver = $record['pserver'];
-        $areaPart = str_replace("PPPOE-SRV", "", $pppserver);
-        $profile = $areaPart . 'DFLT-PROF';
-        // echo $secretname . ' ' . $secretpass . ' ' . $pppserver . ' ' . $profile . PHP_EOL;
-        $additionalParams = [
-            'service' => 'pppoe',  // Set Service to PPPoE
-            'profile' => $profile // Assign a Profile (replace 'default' with actual profile name)
-        ];
-        createSecret($hostip, $apiport, $username, $password, $secretname, $secretpass, $additionalParams);
-    }
-}
-
 function createSingleVlan() {
     $hostip = HOST_IP;
     $apiport = API_PORT;
@@ -209,6 +185,30 @@ function newResellerInit() {
     createProfilesOnPools();
     createVlanRange($startVlan, $endVlan, $namePrefix, $parentIf);
     createPppoeServiceRange($startVlan, $endVlan, $namePrefix);
+}
+
+function radDbtoSecret() {
+    $hostip = HOST_IP;
+    $apiport = API_PORT;
+    $username = USR_NAME;
+    $password = API_PASS;
+    $sqlString = 'SELECT * from rad_login_entry';
+
+    $records = simpleQuerySqlite(RAD_DB_FILE, $sqlString);
+    foreach ($records as $record) {
+        // var_dump($record);
+        $secretname = $record['puname'];
+        $secretpass = $record['ppass'];
+        $pppserver = $record['pserver'];
+        $areaPart = str_replace("PPPOE-SRV", "", $pppserver);
+        $profile = $areaPart . 'DFLT-PROF';
+        // echo $secretname . ' ' . $secretpass . ' ' . $pppserver . ' ' . $profile . PHP_EOL;
+        $additionalParams = [
+            'service' => 'pppoe',  // Set Service to PPPoE
+            'profile' => $profile // Assign a Profile (replace 'default' with actual profile name)
+        ];
+        createSecret($hostip, $apiport, $username, $password, $secretname, $secretpass, $additionalParams);
+    }
 }
 
 radDbtoSecret();
