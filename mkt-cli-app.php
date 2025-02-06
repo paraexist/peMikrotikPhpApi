@@ -195,6 +195,7 @@ function radDbtoSecret() {
     $sqlString = 'SELECT * from rad_login_entry';
 
     $records = simpleQuerySqlite(RAD_DB_FILE, $sqlString);
+    
     foreach ($records as $record) {
         // var_dump($record);
         $secretname = $record['puname'];
